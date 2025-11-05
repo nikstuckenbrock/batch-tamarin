@@ -182,7 +182,9 @@ class InitCommand:
 
         # Max cores
         max_cores_input = Prompt.ask(
-            f"Maximum CPU cores limit for all (concurrent) tasks [violet bold]{escape("[int, max]")}[/violet bold]",
+            "Maximum CPU cores limit for all (concurrent) tasks [violet bold]"
+            + escape("[int, max]")
+            + "[/violet bold]",
             default="max",
             show_default=True,
         )
@@ -190,7 +192,9 @@ class InitCommand:
 
         # Max memory
         max_memory_input = Prompt.ask(
-            f"Maximum memory (GB) limit for all (concurrent) tasks [violet bold]{escape("[int, int%, max]")}[/violet bold]",
+            "Maximum memory (GB) limit for all (concurrent) tasks [violet bold]"
+            + escape("[int, int%, max]")
+            + "[/violet bold]",
             default="max",
             show_default=True,
         )
