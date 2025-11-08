@@ -396,6 +396,29 @@ class TestLemmaFiltering:
         lemma_names = {task.lemma for task in lemma_tasks}
         assert lemma_names == {"test_lemma_1", "test_lemma_2", "different_lemma"}
 
+    def test_lemma_no_prefix_matching(
+        self,
+        complex_recipe_data: Dict[str, Any],
+        mock_notifications: Any,
+        setup_output_manager: Any,
+    ):
+        """Test the lemma mathing without prefix matching"""
+        recipe = TamarinRecipe.model_validate(complex_recipe_data)
+        # Disable prefix matching for all lemmas
+        for task in (t for t in recipe.tasks.values() if t.lemmas):
+            for lemma in task.lemmas:
+                lemma.use_prefix_matching = False
+        executable_tasks = ConfigManager.recipe_to_executable_tasks(recipe)
+
+        # Find lemma_specific_task tasks
+        lemma_tasks = [
+            t for t in executable_tasks if t.task_name.startswith("lemma_task--")
+        ]
+
+        # Should match: different_lemma (from "different_lemma")
+        lemma_names = {task.lemma for task in lemma_tasks}
+        assert lemma_names == {"different_lemma"}
+
     def test_lemma_no_matches_warning(
         self,
         minimal_recipe_data: Dict[str, Any],

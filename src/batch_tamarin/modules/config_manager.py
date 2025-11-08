@@ -312,7 +312,8 @@ class ConfigManager:
                     matching_lemmas = [
                         parsed_lemma
                         for parsed_lemma in visible_lemmas
-                        if lemma_spec.name in parsed_lemma
+                        if lemma_spec.use_prefix_matching and lemma_spec.name in parsed_lemma
+                        or not lemma_spec.use_prefix_matching and lemma_spec.name == parsed_lemma
                     ]
 
                     if not matching_lemmas:
