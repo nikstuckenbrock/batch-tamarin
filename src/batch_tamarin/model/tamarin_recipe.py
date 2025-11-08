@@ -25,7 +25,9 @@ class Lemma(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     name: str = Field(..., description="Name of the lemma to prove")
-    use_prefix_matching: bool = Field(default=True, description="Do prefix matching for lemmas")
+    use_prefix_matching: bool = Field(
+        default=True, description="Do prefix matching for lemmas"
+    )
     tamarin_versions: Optional[List[str]] = Field(
         None,
         min_length=1,
