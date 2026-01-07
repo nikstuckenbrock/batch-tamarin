@@ -113,7 +113,7 @@ def complex_recipe_data(
                 "output_file_prefix": "lemma_task",
                 "lemmas": [
                     {
-                        "name": "test_lemma",
+                        "name": "test_lemma*",
                         "tamarin_versions": ["dev"],
                         "resources": {"max_cores": 4, "max_memory": 8, "timeout": 900},
                     },
