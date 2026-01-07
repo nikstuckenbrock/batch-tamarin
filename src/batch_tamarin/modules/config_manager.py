@@ -1,3 +1,4 @@
+import fnmatch
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -275,7 +276,7 @@ class ConfigManager:
             )
 
             # Check for conflicting lemma specifications (same prefix with different flags)
-            lemma_prefixes = {}
+            lemma_prefixes: dict[str, tuple] = {}
             for lemma_spec in task.lemmas:
                 prefix = lemma_spec.name
                 flags = (
@@ -308,11 +309,11 @@ class ConfigManager:
                         f"[ConfigManager] Lemma spec '{lemma_spec.name}' with flags {effective_flags} found {len(visible_lemmas)} lemmas: {visible_lemmas}"
                     )
 
-                    # Find matching lemmas using prefix matching
+                    # Find matching lemmas using unix filename pattern matching
                     matching_lemmas = [
                         parsed_lemma
                         for parsed_lemma in visible_lemmas
-                        if lemma_spec.name in parsed_lemma
+                        if fnmatch.fnmatch(parsed_lemma, lemma_spec.name)
                     ]
 
                     if not matching_lemmas:
