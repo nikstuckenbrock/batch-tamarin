@@ -293,7 +293,7 @@ class TestTaskRunnerExecution:
                         runner, "_display_progress_update"
                     ) as mock_display:
                         with patch.object(runner, "_handle_shutdown") as mock_shutdown:
-                            with patch("asyncio.sleep") as mock_sleep:
+                            with patch("asyncio.sleep"):
                                 with patch("asyncio.get_event_loop") as mock_loop:
                                     mock_loop.return_value.time.return_value = 1000.0
 

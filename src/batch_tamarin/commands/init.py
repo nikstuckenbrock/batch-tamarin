@@ -760,7 +760,7 @@ class InitCommand:
         self.console.print(f"\n[bold]Select Tamarin versions for {context}[/bold]")
         self.console.print("[dim]Enter version numbers or 'all' for all versions[/dim]")
 
-        self.console.print(f"\n[bold] Available Tamarin versions: [/bold]")
+        self.console.print("\n[bold] Available Tamarin versions: [/bold]")
         for i, alias in enumerate(tamarin_aliases, start=1):
             self.console.print(f"[bold]{i}.[/bold] {alias}")
 
