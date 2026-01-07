@@ -230,10 +230,10 @@ async def test_lemma_prefix_matching(
         "output_file_prefix": "prefix_test",
         "lemmas": [
             {
-                "name": "test_lemma",  # Should match test_lemma_1 and test_lemma_2
+                "name": "test_lemma*",  # Should match test_lemma_1 and test_lemma_2
             },
             {
-                "name": "success",  # Should match success_lemma
+                "name": "success*",  # Should match success_lemma
             },
             {
                 "name": "nonexistent",  # Should match nothing
