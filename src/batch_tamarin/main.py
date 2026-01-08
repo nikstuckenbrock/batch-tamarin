@@ -3,6 +3,7 @@ from typing import List, Optional
 import typer
 
 from . import __author__, __version__
+from .commands.cache import cache_command
 from .commands.check import CheckCommand
 from .commands.init import InitCommand
 from .commands.report import ReportCommand
@@ -10,8 +11,10 @@ from .commands.run import RunCommand
 from .model.tamarin_recipe import SchedulingStrategy
 from .modules.cache_manager import CacheManager
 from .utils.notifications import notification_manager
+from .utils.system_resources import get_human_readable_volume_size
 
 app = typer.Typer(help="batch-tamarin")
+app.add_typer(cache_command)
 
 
 @app.callback(invoke_without_command=True)
@@ -51,13 +54,8 @@ def main_callback(
             stats = cache_manager.get_stats()
             cache_manager.clear_cache()
             # Format volume in human-readable units
-            volume = stats["volume"]
-            unit = "bytes"
-            for unit in ["bytes", "kB", "MB", "GB"]:
-                if volume < 1024 or unit == "GB":
-                    break
-                volume /= 1024
-            print(f"Cleared cache: {stats['size']} entries, {volume:.2f} {unit}")
+            volume = get_human_readable_volume_size(stats["volume"])
+            print(f"Cleared cache: {stats['size']} entries, {volume}")
         except Exception as e:
             print(f"Failed to clear cache: {e}")
             raise typer.Exit(1)
