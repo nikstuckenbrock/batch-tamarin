@@ -321,23 +321,42 @@ class ReportGenerator:
             "version": version,
         }
 
-    def validate_results_directory(self, results_directory: Path) -> Dict[str, bool]:
+    def validate_results_directory(self, results_directory: Path) -> None:
         """
         Validate that the results directory has the expected structure.
 
         Returns:
             Dictionary mapping expected items to their existence status
         """
-        expected_items = {
-            "success": (results_directory / "success").is_dir(),
-            "failed": (results_directory / "failed").is_dir(),
-            "proofs": (results_directory / "proofs").is_dir(),
-            "traces": (results_directory / "traces").is_dir(),
-            "execution_report.json": (
-                results_directory / "execution_report.json"
-            ).is_file(),
-        }
-        return expected_items
+        
+        if not results_directory.is_dir():
+            raise ValueError(
+                f"Results directory '{results_directory}' does not exist or is not a directory."
+            )
+            
+        current_directory = results_directory
+        while current_directory.is_dir():
+            expected_items = {
+                "success": (results_directory / "success").is_dir(),
+                "failed": (results_directory / "failed").is_dir(),
+                "proofs": (results_directory / "proofs").is_dir(),
+                "traces": (results_directory / "traces").is_dir(),
+                "execution_report.json": (
+                    results_directory / "execution_report.json"
+                ).is_file(),
+            }
+            current_directory = current_directory / "rerun"
+            missing = [name for name, exists in expected_items.items() if not exists]
+            if len(missing) == len(expected_items):
+                raise ValueError(
+                    f"Results directory '{results_directory}' is missing all expected items: "
+                    f"{', '.join(expected_items.keys())}."
+                )
+            if missing:
+                notification_manager.warning(
+                    f"Results directory '{results_directory}' is missing expected items: "
+                    f"{', '.join(missing)}. The report may be incomplete."
+                )
 
     def check_template_availability(self, format_type: str) -> bool:
         """Check if template is available for the given format."""

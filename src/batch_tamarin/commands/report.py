@@ -17,29 +17,11 @@ class ReportCommand:
         format_type: str,
     ) -> None:
         """Execute the report generation command."""
-        # Input directory validation
-        if not results_directory.is_dir():
-            raise ValueError(
-                f"Results directory '{results_directory}' does not exist or is not a directory."
-            )
-
         # Initialize report generator
         report_generator = ReportGenerator()
 
         # Validate results directory structure
-        expected_items = report_generator.validate_results_directory(results_directory)
-        missing = [name for name, exists in expected_items.items() if not exists]
-
-        if len(missing) == len(expected_items):
-            raise ValueError(
-                f"Results directory '{results_directory}' is missing all expected items: "
-                f"{', '.join(expected_items.keys())}."
-            )
-        if missing:
-            notification_manager.warning(
-                f"Results directory '{results_directory}' is missing expected items: "
-                f"{', '.join(missing)}. The report may be incomplete."
-            )
+        report_generator.validate_results_directory(results_directory)
 
         # Format type validation
         available_formats = report_generator.get_available_formats()

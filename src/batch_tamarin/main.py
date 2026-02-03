@@ -7,11 +7,13 @@ from .commands.check import CheckCommand
 from .commands.init import InitCommand
 from .commands.report import ReportCommand
 from .commands.run import RunCommand
+from .commands.recipe import recipe_command
 from .model.tamarin_recipe import SchedulingStrategy
 from .modules.cache_manager import CacheManager
 from .utils.notifications import notification_manager
 
 app = typer.Typer(help="batch-tamarin")
+app.add_typer(recipe_command)
 
 
 @app.callback(invoke_without_command=True)
