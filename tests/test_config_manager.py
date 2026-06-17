@@ -176,6 +176,39 @@ class TestTaskGeneration:
             assert task.max_memory == 16  # default
             assert task.task_timeout == 3600  # from global config
 
+    @pytest.mark.asyncio
+    async def test_stop_on_trace_task_and_lemma_override(
+        self,
+        minimal_recipe_data: dict[str, Any],
+        mock_notifications: Any,
+        setup_output_manager: Any,
+    ):
+        """Test stop_on_trace inheritance and lemma override."""
+        minimal_recipe_data["tasks"]["test_task"]["stop_on_trace"] = "DFS"
+        minimal_recipe_data["tasks"]["test_task"]["lemmas"] = [
+            {"name": "test_lemma_1", "stop_on_trace": "BFS"},
+            {"name": "test_lemma_2"},
+        ]
+
+        recipe = TamarinRecipe.model_validate(minimal_recipe_data)
+        executable_tasks = ConfigManager.recipe_to_executable_tasks(recipe)
+
+        task_bfs = next(
+            t for t in executable_tasks if t.lemma == "test_lemma_1"
+        )
+        task_dfs = next(
+            t for t in executable_tasks if t.lemma == "test_lemma_2"
+        )
+
+        assert task_bfs.stop_on_trace == "bfs"
+        assert task_dfs.stop_on_trace == "dfs"
+
+        command_bfs = await task_bfs.to_command()
+        command_dfs = await task_dfs.to_command()
+
+        assert "--stop-on-trace=BFS" in command_bfs
+        assert "--stop-on-trace=DFS" in command_dfs
+
     def test_recipe_to_executable_tasks_with_nonexistent_theory(
         self,
         minimal_recipe_data: dict[str, Any],

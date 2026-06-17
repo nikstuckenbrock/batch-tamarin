@@ -9,6 +9,7 @@ from ..model.executable_task import ExecutableTask
 from ..model.tamarin_recipe import (
     GlobalConfig,
     Lemma,
+    StopOnTraceStrategy,
     TamarinRecipe,
     TamarinVersion,
     Task,
@@ -26,6 +27,7 @@ class LemmaConfig:
     lemma_name: str
     effective_tamarin_versions: list[str]
     tamarin_options: list[str] | None
+    stop_on_trace: StopOnTraceStrategy | None
     preprocess_flags: list[str] | None
     max_cores: int
     max_memory: int
@@ -440,6 +442,11 @@ class ConfigManager:
                 if lemma_spec.tamarin_options is not None
                 else task.tamarin_options
             )
+            stop_on_trace: StopOnTraceStrategy | None = (
+                lemma_spec.stop_on_trace
+                if lemma_spec.stop_on_trace is not None
+                else task.stop_on_trace
+            )
             preprocess_flags: list[str] | None = (
                 lemma_spec.preprocess_flags
                 if lemma_spec.preprocess_flags is not None
@@ -448,12 +455,14 @@ class ConfigManager:
         else:
             effective_tamarin_versions = task.tamarin_versions
             tamarin_options = task.tamarin_options
+            stop_on_trace = task.stop_on_trace
             preprocess_flags = task.preprocess_flags
 
         return LemmaConfig(
             lemma_name=lemma_name,
             effective_tamarin_versions=effective_tamarin_versions,
             tamarin_options=tamarin_options,
+            stop_on_trace=stop_on_trace,
             preprocess_flags=preprocess_flags,
             max_cores=cores,
             max_memory=memory,
@@ -581,6 +590,7 @@ class ConfigManager:
                     output_file=models_dir / f"{unique_task_id}.spthy",
                     lemma=lemma_config.lemma_name,
                     tamarin_options=lemma_config.tamarin_options,
+                    stop_on_trace=lemma_config.stop_on_trace,
                     preprocess_flags=lemma_config.preprocess_flags,
                     max_cores=lemma_config.max_cores,
                     max_memory=lemma_config.max_memory,

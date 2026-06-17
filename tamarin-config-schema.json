@@ -121,6 +121,11 @@
 								"minItems": 1,
 								"uniqueItems": true
 							},
+							"stop_on_trace": {
+								"type": "string",
+								"enum": ["BFS", "DFS", "SEQDFS", "bfs", "dfs", "seqdfs"],
+								"description": "Stop-on-trace/Search strategy flag to pass to Tamarin for this lemma. Overrides task-level stop_on_trace"
+							},
 							"tamarin_options": {
 								"type": "array",
 								"description": "Additional command-line options to pass to Tamarin for this lemma. Overrides task-level options",
@@ -167,6 +172,11 @@
 					"items": {
 						"type": "string"
 					}
+				},
+				"stop_on_trace": {
+					"type": "string",
+					"enum": ["BFS", "DFS", "SEQDFS", "bfs", "dfs", "seqdfs"],
+					"description": "Stop-on-trace/Search strategy to pass to Tamarin for this task. If set, applies to all lemmas in this task unless overridden by lemma-specific stop_on_trace."
 				},
 				"preprocess_flags": {
 					"type": "array",

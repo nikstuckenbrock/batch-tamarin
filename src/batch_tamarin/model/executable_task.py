@@ -9,6 +9,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 
+from .tamarin_recipe import StopOnTraceStrategy
+
 
 @dataclass
 class ExecutableTask:
@@ -46,6 +48,9 @@ class ExecutableTask:
 
     tamarin_options: list[str] | None
     """Additional command-line options"""
+
+    stop_on_trace: StopOnTraceStrategy | None
+    """Stop-on-trace/Search strategy"""
 
     preprocess_flags: list[str] | None
     """Preprocessor flags"""
@@ -91,6 +96,9 @@ class ExecutableTask:
         if self.lemma:
             # Prove specific lemma
             command.append(f"--prove={self.lemma}")
+
+        if self.stop_on_trace:
+            command.append(f"--stop-on-trace={self.stop_on_trace}")
 
         # Add tamarin options if provided
         if self.tamarin_options:

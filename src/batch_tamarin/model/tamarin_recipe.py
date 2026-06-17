@@ -19,6 +19,14 @@ class SchedulingStrategy(str, Enum):
     LJF = "ljf"  # Longest job first (largest resource requirements first)
 
 
+class StopOnTraceStrategy(str, Enum):
+    """Stop-on-trace/Search modes."""
+
+    BFS = "bfs"
+    DFS = "dfs"
+    SEQDFS = "seqdfs"
+
+
 class Lemma(BaseModel):
     """Individual lemma specification for proving."""
 
@@ -33,6 +41,10 @@ class Lemma(BaseModel):
     tamarin_options: list[str] | None = Field(
         None,
         description="Additional command-line options to pass to Tamarin for this lemma. Overrides task-level options",
+    )
+    stop_on_trace: StopOnTraceStrategy | None = Field(
+        None,
+        description="Stop-on-trace strategy to pass to Tamarin for this lemma. Overrides task-level stop_on_trace",
     )
     preprocess_flags: list[str] | None = Field(
         None,
@@ -111,6 +123,10 @@ class Task(BaseModel):
     )
     tamarin_options: list[str] | None = Field(
         None, description="Additional command-line options to pass to Tamarin"
+    )
+    stop_on_trace: StopOnTraceStrategy | None = Field(
+        None,
+        description="Stop-on-trace strategy to pass to Tamarin for this task. If set, applies to all lemmas in this task unless overridden by lemma-specific stop_on_trace.",
     )
     preprocess_flags: list[str] | None = Field(
         None, description="Preprocessor flags to pass to Tamarin using -D=flag format"
